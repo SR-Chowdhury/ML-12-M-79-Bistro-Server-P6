@@ -45,8 +45,8 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        // await client.connect();
-        client.connect();
+        await client.connect();
+        // client.connect();
 
         const userCollection = client.db("bistroDB").collection("users");
         const menuCollection = client.db("bistroDB").collection("menu");
@@ -135,6 +135,13 @@ async function run() {
             const result = await menuCollection.insertOne(newItem);
             res.send(result);
         });
+
+        app.delete('/menu/:id', jwtVerify, verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: id };
+            const result = await menuCollection.deleteOne(query);
+            res.send(result);
+        })
 
 
         /**
